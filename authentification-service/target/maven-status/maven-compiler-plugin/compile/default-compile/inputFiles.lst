@@ -1,0 +1,17 @@
+C:\Dev\Micro_Services\Workspace2\authentification-service\src\main\java\org\ms\authentification\config\WebConfig.java
+C:\Dev\Micro_Services\Workspace2\authentification-service\src\main\java\org\ms\authentification\service\AuthService.java
+C:\Dev\Micro_Services\Workspace2\authentification-service\src\main\java\org\ms\authentification\exception\TokenValidationException.java
+C:\Dev\Micro_Services\Workspace2\authentification-service\src\main\java\org\ms\authentification\security\JwtAuthenticationFilter.java
+C:\Dev\Micro_Services\Workspace2\authentification-service\src\main\java\org\ms\authentification\dto\LoginRequest.java
+C:\Dev\Micro_Services\Workspace2\authentification-service\src\main\java\org\ms\authentification\service\IAuthService.java
+C:\Dev\Micro_Services\Workspace2\authentification-service\src\main\java\org\ms\authentification\controller\ExceptionHandlerAdvice.java
+C:\Dev\Micro_Services\Workspace2\authentification-service\src\main\java\org\ms\authentification\dto\RegisterRequest.java
+C:\Dev\Micro_Services\Workspace2\authentification-service\src\main\java\org\ms\authentification\controller\AuthController.java
+C:\Dev\Micro_Services\Workspace2\authentification-service\src\main\java\org\ms\authentification\dto\AuthRequest.java
+C:\Dev\Micro_Services\Workspace2\authentification-service\src\main\java\org\ms\authentification\AuthenticationServiceApplication.java
+C:\Dev\Micro_Services\Workspace2\authentification-service\src\main\java\org\ms\authentification\repository\UserRepository.java
+C:\Dev\Micro_Services\Workspace2\authentification-service\src\main\java\org\ms\authentification\config\SecurityConfig.java
+C:\Dev\Micro_Services\Workspace2\authentification-service\src\main\java\org\ms\authentification\exception\AuthenticationFailedException.java
+C:\Dev\Micro_Services\Workspace2\authentification-service\src\main\java\org\ms\authentification\entity\Role.java
+C:\Dev\Micro_Services\Workspace2\authentification-service\src\main\java\org\ms\authentification\entity\User.java
+C:\Dev\Micro_Services\Workspace2\authentification-service\src\main\java\org\ms\authentification\dto\AuthResponse.java

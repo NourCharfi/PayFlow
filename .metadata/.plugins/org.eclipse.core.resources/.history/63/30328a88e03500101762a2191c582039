@@ -1,0 +1,26 @@
+package main.java.org.ms.authentification.service;
+
+import org.keycloak.admin.client.Keycloak;
+import org.keycloak.admin.client.KeycloakBuilder;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+@Service
+public class AuthService implements IAuthService {
+    // ... existing code ...
+
+    @Override
+    public String authenticate(String username, String password) {
+        // ... existing authentication logic ...
+    }
+
+    @Override
+    public boolean validateToken(String token) {
+        // Add token validation logic here
+    }
+
+    @Override
+    public String refreshToken(String refreshToken) {
+        // Add token refresh logic here
+    }
+}

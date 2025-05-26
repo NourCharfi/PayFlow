@@ -1,0 +1,7 @@
+package main.java.org.ms.authentification.service;
+
+public interface IAuthService {
+    String authenticate(String username, String password);
+    boolean validateToken(String token);
+    String refreshToken(String refreshToken);
+}
