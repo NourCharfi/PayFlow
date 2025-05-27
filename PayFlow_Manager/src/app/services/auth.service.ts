@@ -1,22 +1,31 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { User, AuthResponse, LoginRequest, RefreshTokenRequest, RegisterRequest } from '../models/auth.model';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 
-@Injectable({
-  providedIn: 'root'
-})
+export interface User {
+  username: string;
+  roles: string[];
+  token: string;
+  refreshToken: string;
+  expiresIn: number;
+}
+
+export interface AuthResponse {
+  access_token: string;
+  refresh_token: string;
+  roles: string[];
+  expires_in: number;
+}
+
+@Injectable({ providedIn: 'root' })
 export class AuthService {
-  private apiUrl = '/api/auth';
-  private currentUserSubject: BehaviorSubject<User | null>;
-  public currentUser: Observable<User | null>;
+  private apiUrl = 'http://localhost:8080/authentification-service';
+  private currentUserSubject: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(this.getUserFromStorage());
+  public currentUser: Observable<User | null> = this.currentUserSubject.asObservable();
   private refreshTokenTimeout: any;
 
-  constructor(private http: HttpClient) {
-    this.currentUserSubject = new BehaviorSubject<User | null>(this.getUserFromStorage());
-    this.currentUser = this.currentUserSubject.asObservable();
-  }
+  constructor(private http: HttpClient) {}
 
   private getUserFromStorage(): User | null {
     const user = localStorage.getItem('currentUser');
@@ -28,24 +37,26 @@ export class AuthService {
   }
 
   login(username: string, password: string): Observable<User> {
-    const loginRequest: LoginRequest = { username, password };
-    return this.http.post<AuthResponse>(`${this.apiUrl}/login`, loginRequest)
-      .pipe(
-        map(response => {
-          const user: User = {
-            id: response.user_id, // Make sure your backend sends this
-            username: username,
-            token: response.access_token,
-            refreshToken: response.refresh_token,
-            roles: response.roles,
-            expiresIn: response.expires_in
-          };
-          localStorage.setItem('currentUser', JSON.stringify(user));
-          this.currentUserSubject.next(user);
-          this.startRefreshTokenTimer(user);
-          return user;
-        })
-      );
+    const body = new URLSearchParams();
+    body.set('username', username);
+    body.set('password', password);
+    return this.http.post<AuthResponse>(`${this.apiUrl}/login`, body.toString(), {
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+    }).pipe(
+      map(response => {
+        const user: User = {
+          username: username,
+          roles: response.roles,
+          token: response.access_token,
+          refreshToken: response.refresh_token,
+          expiresIn: response.expires_in
+        };
+        localStorage.setItem('currentUser', JSON.stringify(user));
+        this.currentUserSubject.next(user);
+        this.startRefreshTokenTimer(user);
+        return user;
+      })
+    );
   }
 
   logout() {
@@ -55,30 +66,32 @@ export class AuthService {
   }
 
   refreshToken(): Observable<User | null> {
-    const request: RefreshTokenRequest = {
-      refreshToken: this.currentUserValue?.refreshToken ?? ''
-    };
-    return this.http.post<AuthResponse>(`${this.apiUrl}/refreshToken`, request)
-      .pipe(
-        map(response => {
-          const user = this.currentUserValue;
-          if (user) {
-            user.token = response.access_token;
-            user.refreshToken = response.refresh_token;
-            user.expiresIn = response.expires_in;
-            localStorage.setItem('currentUser', JSON.stringify(user));
-            this.currentUserSubject.next(user);
-            this.startRefreshTokenTimer(user);
-            return user;
-          }
-          return null;
-        })
-      );
+    const user = this.currentUserValue;
+    if (!user?.refreshToken) return of(null);
+    return this.http.get<AuthResponse>(`${this.apiUrl}/users/refreshToken`, {
+      headers: { Authorization: `Bearer ${user.refreshToken}` }
+    }).pipe(
+      map(response => {
+        if (user) {
+          user.token = response.access_token;
+          user.refreshToken = response.refresh_token;
+          user.expiresIn = response.expires_in;
+          localStorage.setItem('currentUser', JSON.stringify(user));
+          this.currentUserSubject.next(user);
+          this.startRefreshTokenTimer(user);
+          return user;
+        }
+        return null;
+      }),
+      catchError(() => {
+        this.logout();
+        return of(null);
+      })
+    );
   }
 
   private startRefreshTokenTimer(user: User) {
     this.stopRefreshTokenTimer();
-    // Refresh the token 1 minute before expiry
     const expires = new Date(Date.now() + (user.expiresIn * 1000));
     const timeout = expires.getTime() - Date.now() - (60 * 1000);
     this.refreshTokenTimeout = setTimeout(() => this.refreshToken().subscribe(), timeout);
@@ -102,17 +115,5 @@ export class AuthService {
 
   isAdmin(): boolean {
     return this.hasRole('ADMIN');
-  }
-
-  getAllUsers(): Observable<User[]> {
-    return this.http.get<User[]>(`${this.apiUrl}/users`);
-  }
-
-  updateUserRoles(userId: number, roles: string[]): Observable<User> {
-    return this.http.put<User>(`${this.apiUrl}/users/${userId}/roles`, { roles });
-  }
-
-  register(user: RegisterRequest): Observable<User> {
-    return this.http.post<User>(`${this.apiUrl}/register`, user);
   }
 }

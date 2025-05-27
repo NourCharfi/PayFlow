@@ -23,11 +23,8 @@ import { AddProductComponent } from './add-product/add-product.component';
 import { PrintFactureComponent } from './print-facture/print-facture.component';
 import { NlToBrPipe } from './pipes/nl-to-br.pipe';
 import { NavbarComponent } from './navbar/navbar.component';
-import { LoginComponent } from './login/login.component';
-import { AuthInterceptor } from './interceptors/auth.interceptor';
-import { ErrorInterceptor } from './interceptors/error.interceptor';
-import { RegisterComponent } from './register/register.component';
 import { JwtInterceptor } from './interceptors/jwt.interceptor';
+import { LoginComponent } from './login/login.component';
 
 @NgModule({
   declarations: [
@@ -45,9 +42,8 @@ import { JwtInterceptor } from './interceptors/jwt.interceptor';
     NavbarComponent,
     PrintFactureComponent,
     NlToBrPipe,
-    LoginComponent,
-    RegisterComponent,
-    DashboardComponent
+    DashboardComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
@@ -66,8 +62,6 @@ import { JwtInterceptor } from './interceptors/jwt.interceptor';
     })
   ],
   providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]

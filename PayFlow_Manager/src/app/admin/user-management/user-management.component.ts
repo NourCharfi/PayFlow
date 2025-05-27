@@ -57,7 +57,7 @@ export class UserManagementComponent implements OnInit {
   loadUsers() {
     this.authService.getAllUsers().subscribe({
       next: (users: User[]) => this.users = users,
-      error: (err: Error) => this.error = 'Failed to load users'
+      error: (err: any) => this.error = 'Failed to load users'
     });
   }
 
@@ -73,7 +73,7 @@ export class UserManagementComponent implements OnInit {
           this.users[index] = updatedUser;
         }
       },
-      error: (err: Error) => this.error = 'Failed to update user roles'
+      error: (err: any) => this.error = 'Failed to update user roles'
     });
   }
 }

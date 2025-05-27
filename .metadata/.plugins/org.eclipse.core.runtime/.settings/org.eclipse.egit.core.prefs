@@ -1,4 +1,4 @@
-GitRepositoriesView.GitDirectories=C\:\\Dev\\Micro_Services\\Workspace2\\cloud-conf\\.git;
-GitRepositoriesView.GitDirectories.relative=cloud-conf\\.git;
+GitRepositoriesView.GitDirectories=C\:\\DSIR12\\Dev\\Micro-Services\\projet\\PayFlow\\cloud-conf\\.git;C\:\\DSIR12\\Dev\\Micro-Services\\projet\\PayFlow\\.git;
+GitRepositoriesView.GitDirectories.relative=cloud-conf\\.git;.git;
 core_autoIgnoreDerivedResources=false
 eclipse.preferences.version=1

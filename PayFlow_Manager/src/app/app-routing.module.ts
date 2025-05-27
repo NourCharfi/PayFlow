@@ -13,18 +13,14 @@ import { AddClientComponent } from './add-client/add-client.component';
 import { ProductListComponent } from './product-list/product-list.component';
 import { AddProductComponent } from './add-product/add-product.component';
 import { PrintFactureComponent } from './print-facture/print-facture.component';
-import { LoginComponent } from './login/login.component';
 import { AuthGuard } from './guards/auth.guard';
-import { RegisterComponent } from './register/register.component';
-import { UserManagementComponent } from './admin/user-management/user-management.component';
 import { AdminGuard } from './guards/admin.guard';
+import { LoginComponent } from './login/login.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
-  { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
+  { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
-  { path: 'register', component: RegisterComponent },
-  { path: 'admin/users', component: UserManagementComponent, canActivate: [AuthGuard, AdminGuard] },
+  { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
   
   // Protected routes with auth guard
   { 

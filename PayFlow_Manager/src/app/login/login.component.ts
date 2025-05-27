@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { ToastrService } from 'ngx-toastr';
@@ -12,46 +12,48 @@ import { first } from 'rxjs/operators';
         <div class="col-md-6">
           <div class="card">
             <div class="card-body">
-              <h3 class="card-title text-center mb-4">Login</h3>
-              <div *ngIf="error" class="alert alert-danger">{{error}}</div>
-              <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
+              <h3 class="card-title text-center mb-4">Connexion</h3>
+              <div *ngIf="error" class="alert alert-danger" role="alert">{{error}}</div>
+              <form (ngSubmit)="onSubmit()" #loginForm="ngForm" autocomplete="off" novalidate>
                 <div class="mb-3">
-                  <label for="username" class="form-label">Username</label>
-                  <input type="text" 
-                         class="form-control" 
-                         id="username" 
-                         [(ngModel)]="username" 
-                         name="username" 
+                  <label for="username" class="form-label">Nom d'utilisateur</label>
+                  <input type="text"
+                         class="form-control"
+                         id="username"
+                         [(ngModel)]="username"
+                         name="username"
                          #usernameField="ngModel"
                          required
+                         autocomplete="username"
                          [class.is-invalid]="usernameField.invalid && usernameField.touched">
                   <div class="invalid-feedback" *ngIf="usernameField.invalid && usernameField.touched">
-                    Username is required
+                    Le nom d'utilisateur est requis
                   </div>
                 </div>
                 <div class="mb-3">
-                  <label for="password" class="form-label">Password</label>
-                  <input type="password" 
-                         class="form-control" 
-                         id="password" 
-                         [(ngModel)]="password" 
+                  <label for="password" class="form-label">Mot de passe</label>
+                  <input type="password"
+                         class="form-control"
+                         id="password"
+                         [(ngModel)]="password"
                          name="password"
-                         #passwordField="ngModel" 
+                         #passwordField="ngModel"
                          required
+                         autocomplete="current-password"
                          [class.is-invalid]="passwordField.invalid && passwordField.touched">
                   <div class="invalid-feedback" *ngIf="passwordField.invalid && passwordField.touched">
-                    Password is required
+                    Le mot de passe est requis
                   </div>
                 </div>
                 <div class="d-grid">
-                  <button type="submit" 
-                          class="btn btn-primary" 
+                  <button type="submit"
+                          class="btn btn-primary"
                           [disabled]="loading || loginForm.invalid">
-                    {{loading ? 'Loading...' : 'Login'}}
+                    {{loading ? 'Connexion...' : 'Se connecter'}}
                   </button>
                 </div>
                 <div class="text-center mt-3">
-                  <a routerLink="/register">Don't have an account? Register</a>
+                  <a routerLink="/register">Pas de compte ? S'inscrire</a>
                 </div>
               </form>
             </div>
@@ -61,7 +63,7 @@ import { first } from 'rxjs/operators';
     </div>
   `
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
   username = '';
   password = '';
   loading = false;
@@ -74,38 +76,37 @@ export class LoginComponent implements OnInit {
     private route: ActivatedRoute,
     private toastr: ToastrService
   ) {
-    // redirect to home if already logged in
     if (this.authService.currentUserValue) {
       this.router.navigate(['/']);
     }
   }
 
   ngOnInit() {
-    // get return url from route parameters or default to '/'
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
   }
 
   onSubmit() {
     if (!this.username || !this.password) {
-      this.error = 'Please fill in all fields';
+      this.error = 'Veuillez remplir tous les champs';
       return;
     }
-
     this.loading = true;
     this.error = '';
-
     this.authService.login(this.username, this.password)
       .pipe(first())
       .subscribe({
         next: () => {
-          this.toastr.success('Login successful');
+          this.toastr.success('Connexion réussie');
           this.router.navigate([this.returnUrl]);
         },
         error: error => {
-          this.error = error.message || 'Login failed';
+          this.error = error.error?.message || 'Échec de la connexion';
           this.loading = false;
           this.toastr.error(this.error);
         }
       });
   }
 }
+
+// Assurez-vous que FormsModule est importé dans AppModule pour utiliser ngModel dans les templates.
+// import { FormsModule } from '@angular/forms';
