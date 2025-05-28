@@ -97,7 +97,7 @@ export class LoginComponent {
       .subscribe({
         next: () => {
           this.toastr.success('Connexion réussie');
-          this.router.navigate([this.returnUrl]);
+          this.router.navigate(['/home']);
         },
         error: error => {
           this.error = error.error?.message || 'Échec de la connexion';

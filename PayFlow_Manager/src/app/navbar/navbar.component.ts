@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ThemeService } from '../services/theme.service';
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
     selector: 'app-navbar',
@@ -50,6 +51,12 @@ import { Router } from '@angular/router';
                                 <a class="nav-link" routerLink="/reglement-list" routerLinkActive="active">
                                     <i class="fas fa-credit-card me-1"></i>
                                     Règlements
+                                </a>
+                            </li>
+                               <li class="nav-item">
+                                <a class="nav-link" routerLink="/users" routerLinkActive="active">
+                                    <i class="fas fa-users me-1"></i>
+                                    Utilisateurs
                                 </a>
                             </li>
                         </ul>
@@ -159,11 +166,18 @@ export class NavbarComponent {
     constructor(
         public themeService: ThemeService,
         public authService: AuthService,
-        private router: Router
-    ) { }
+        private router: Router,
+        private toastr: ToastrService
+    ) {
+      this.authService.onLogout.subscribe(() => {
+        this.toastr.info('Déconnexion réussie');
+        if (this.router.url !== '/login') {
+          this.router.navigate(['/login']);
+        }
+      });
+    }
 
     logout() {
         this.authService.logout();
-        this.router.navigate(['/login']);
     }
 }

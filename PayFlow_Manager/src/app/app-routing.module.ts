@@ -16,9 +16,10 @@ import { PrintFactureComponent } from './print-facture/print-facture.component';
 import { AuthGuard } from './guards/auth.guard';
 import { AdminGuard } from './guards/admin.guard';
 import { LoginComponent } from './login/login.component';
+import { UsersComponent } from './users/users.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/login', pathMatch: 'full' },
+  { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
   
@@ -56,10 +57,12 @@ const routes: Routes = [
   { path: 'clients/add', component: AddClientComponent, canActivate: [AuthGuard] },
   { path: 'clients/edit/:id', component: AddClientComponent, canActivate: [AuthGuard] },
   
-  // Product routes
-  { path: 'products', component: ProductListComponent, canActivate: [AuthGuard] },
-  { path: 'products/add', component: AddProductComponent, canActivate: [AuthGuard] },
-  { path: 'products/edit/:id', component: AddProductComponent, canActivate: [AuthGuard] }
+  // Product routes sécurisées
+  { path: 'products', component: ProductListComponent, canActivate: [AuthGuard, AdminGuard] },
+  { path: 'products/add', component: AddProductComponent, canActivate: [AuthGuard, AdminGuard] },
+  { path: 'products/edit/:id', component: AddProductComponent, canActivate: [AuthGuard, AdminGuard] },
+  // User management
+  { path: 'users', component: UsersComponent, canActivate: [AuthGuard] }
 ];
 
 @NgModule({
